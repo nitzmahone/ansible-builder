@@ -21,7 +21,7 @@ ALLOWED_KEYS_V2 = [
 
 
 # HACK: manage lifetimes more carefully
-_tempfiles: list[tempfile.TemporaryFile] = []
+_tempfiles: list[type[tempfile.TemporaryFile]] = []
 
 
 class ImageDescription:
