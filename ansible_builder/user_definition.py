@@ -23,6 +23,7 @@ ALLOWED_KEYS_V2 = [
 # HACK: manage lifetimes more carefully
 _tempfiles: list[tempfile.TemporaryFile] = []
 
+
 class ImageDescription:
     """
     Class to describe a container image from the EE file.
@@ -229,7 +230,6 @@ class UserDefinition:
 
             # Must set these values so that Containerfile uses the proper images
             self.build_arg_defaults['EE_BASE_IMAGE'] = self.base_image.name
-
 
     def _validate_v1(self):
         """
