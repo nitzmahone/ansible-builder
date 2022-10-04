@@ -36,7 +36,7 @@ def run():
             sys.exit(1)
 
     elif args.action == 'introspect':
-        run_introspect()
+        run_introspect(args, logger)
 
     logger.error("An error has occured.")
     sys.exit(1)

@@ -313,6 +313,10 @@ class Containerfile:
                 # FIXME: just use builtin copy?
                 copy_file(str(script_path), scripts_dir)
 
+        # later steps depend on base image containing these scripts
+        context_dir = pathlib.Path(self.build_outputs_dir).stem
+        self.steps.append(f'COPY {context_dir}/scripts/ /output/scripts/')
+
     def prepare_ansible_config_file(self):
         ansible_config_file_path = self.definition.ansible_config
         if ansible_config_file_path:
@@ -377,13 +381,7 @@ class Containerfile:
         # The introspect/assemble block is valid if there are any form of requirements
         if any(self.definition.get_dep_abs_path(thing) for thing in ('galaxy', 'system', 'python')):
 
-            # copy in the various helper scripts
-            self.steps.append(f'ADD {constants.user_content_subfolder}/scripts/* .')
-
-            # FIXME: just fix it to run the scripts from the right place
-            self.steps.append('RUN mkdir -p /output && cp ./install-from-bindep /output')
-
-            introspect_cmd = "RUN $PYCMD introspect.py introspect --sanitize"
+            introspect_cmd = "RUN $PYCMD /output/scripts/introspect.py introspect --sanitize"
 
             requirements_file_exists = os.path.exists(os.path.join(
                 self.build_outputs_dir, constants.CONTEXT_FILES['python']
@@ -403,14 +401,14 @@ class Containerfile:
             introspect_cmd += " --write-bindep=/tmp/src/bindep.txt --write-pip=/tmp/src/requirements.txt"
 
             self.steps.append(introspect_cmd)
-            self.steps.append("RUN ./assemble")
+            self.steps.append("RUN /output/scripts/assemble")
 
         return self.steps
 
     def prepare_system_runtime_deps_steps(self):
         self.steps.extend([
             "COPY --from=builder /output/ /output/",
-            "RUN /output/install-from-bindep && rm -rf /output/wheels",
+            "RUN /output/scripts/install-from-bindep && rm -rf /output/wheels",
         ])
 
         return self.steps
@@ -438,7 +436,8 @@ class Containerfile:
                 "FROM $EE_BUILDER_IMAGE as builder"
                 "",
             ])
-        else:  # dynamic builder, create from customized base
+        else:
+            # dynamic builder, create from customized base
             self.steps.extend([
                 'FROM base as builder',
                 'ARG PYCMD',
