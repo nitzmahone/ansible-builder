@@ -132,3 +132,23 @@ def test_galaxy_signing_extra_args(cli, build_dir_and_ee_yml):
 
     assert "--ignore-signature-status-code 500" in text
     assert "--required-valid-signature-count 3" in text
+
+
+def test_pre_post_commands(cli, data_dir, tmp_path):
+    """Test that the pre/post commands are inserted"""
+    ee_def = data_dir / 'v2' / 'pre_and_post' / 'ee.yml'
+    r = cli(f'ansible-builder create -c {str(tmp_path)} -f {ee_def}')
+    assert r.rc == 0
+
+    containerfile = tmp_path / "Containerfile"
+    assert containerfile.exists()
+    text = containerfile.read_text()
+
+    assert "ARG PRE_BASE" in text
+    assert "ARG POST_BASE" in text
+    assert "ARG PRE_GALAXY" in text
+    assert "ARG POST_GALAXY" in text
+    assert "ARG PRE_BUILDER" in text
+    assert "ARG POST_BUILDER" in text
+    assert "ARG PRE_FINAL" in text
+    assert "ARG POST_FINAL" in text

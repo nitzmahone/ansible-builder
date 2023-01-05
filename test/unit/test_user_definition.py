@@ -58,10 +58,14 @@ class TestUserDefinition:
             "{'version': 2, 'build_arg_defaults': {'EE_BUILDER_IMAGE': 'foo'}, 'images': {}}",
             "Additional properties are not allowed ('EE_BUILDER_IMAGE' was unexpected)"
         ),  # v1 builder image defined in v2 file
+        (
+            "{'version': 2, 'additional_build_steps': {'prepend': ''}}",
+            "Additional properties are not allowed ('prepend' was unexpected)"
+        ),  # 'prepend' is renamed in v2
     ], ids=[
         'integer', 'missing_file', 'additional_steps_format', 'additional_unknown',
         'build_args_value_type', 'unexpected_build_arg', 'config_type', 'v1_contains_v2_key',
-        'v2_unknown_key', 'v1_base_image_in_v2', 'v1_builder_image_in_v2'
+        'v2_unknown_key', 'v1_base_image_in_v2', 'v1_builder_image_in_v2', 'prepend_in_v2',
     ])
     def test_yaml_error(self, exec_env_definition_file, yaml_text, expect):
         path = exec_env_definition_file(yaml_text)

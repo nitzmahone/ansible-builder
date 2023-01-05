@@ -152,10 +152,28 @@ schema_v2 = {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "prepend": {
+                "prepend_base": {
                     "anyOf": [{"type": "string"}, {"type": "array"}],
                 },
-                "append": {
+                "append_base": {
+                    "anyOf": [{"type": "string"}, {"type": "array"}],
+                },
+                "prepend_galaxy": {
+                    "anyOf": [{"type": "string"}, {"type": "array"}],
+                },
+                "append_galaxy": {
+                    "anyOf": [{"type": "string"}, {"type": "array"}],
+                },
+                "prepend_builder": {
+                    "anyOf": [{"type": "string"}, {"type": "array"}],
+                },
+                "append_builder": {
+                    "anyOf": [{"type": "string"}, {"type": "array"}],
+                },
+                "prepend_final": {
+                    "anyOf": [{"type": "string"}, {"type": "array"}],
+                },
+                "append_final": {
                     "anyOf": [{"type": "string"}, {"type": "array"}],
                 },
             },
