@@ -2,10 +2,12 @@
 version: 2
 
 additional_build_steps:
-  prepend_base:
-    - ARG PRE_BASE
+  prepend_base: |
+    ARG PRE_BASE1
+    ARG PRE_BASE2
   append_base:
-    - ARG POST_BASE
+    - ARG POST_BASE1
+    - ARG POST_BASE2
   prepend_galaxy:
     - ARG PRE_GALAXY
   append_galaxy:

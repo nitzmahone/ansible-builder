@@ -144,8 +144,10 @@ def test_pre_post_commands(cli, data_dir, tmp_path):
     assert containerfile.exists()
     text = containerfile.read_text()
 
-    assert "ARG PRE_BASE" in text
-    assert "ARG POST_BASE" in text
+    assert "ARG PRE_BASE1\n" in text
+    assert "ARG PRE_BASE2\n" in text
+    assert "ARG POST_BASE1\n" in text
+    assert "ARG POST_BASE2\n" in text
     assert "ARG PRE_GALAXY" in text
     assert "ARG POST_GALAXY" in text
     assert "ARG PRE_BUILDER" in text

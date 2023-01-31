@@ -3,6 +3,19 @@ from jsonschema import validate, SchemaError, ValidationError
 from ansible_builder.exceptions import DefinitionError
 
 
+TYPE_StringOrListOfStrings = {
+    "anyOf": [
+        {"type": "string"},
+        {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    ]
+}
+
+
 ############
 # Version 1
 ############
@@ -60,12 +73,8 @@ schema_v1 = {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "prepend": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "append": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
+                "prepend": TYPE_StringOrListOfStrings,
+                "append": TYPE_StringOrListOfStrings,
             },
         },
     },
@@ -152,30 +161,14 @@ schema_v2 = {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "prepend_base": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "append_base": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "prepend_galaxy": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "append_galaxy": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "prepend_builder": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "append_builder": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "prepend_final": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
-                "append_final": {
-                    "anyOf": [{"type": "string"}, {"type": "array"}],
-                },
+                "prepend_base": TYPE_StringOrListOfStrings,
+                "append_base": TYPE_StringOrListOfStrings,
+                "prepend_galaxy": TYPE_StringOrListOfStrings,
+                "append_galaxy": TYPE_StringOrListOfStrings,
+                "prepend_builder": TYPE_StringOrListOfStrings,
+                "append_builder": TYPE_StringOrListOfStrings,
+                "prepend_final": TYPE_StringOrListOfStrings,
+                "append_final": TYPE_StringOrListOfStrings,
             },
         },
     },
