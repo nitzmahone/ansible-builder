@@ -98,6 +98,21 @@ class TestUserDefinition:
             AnsibleBuilder(filename=path)
         assert "'name' is a required field for 'base_image'" in str(error.value.args[0])
 
+    def test_v1_to_v2_key_upgrades(self, exec_env_definition_file):
+        """ Test that EE schema keys are upgraded from version V1 to V2. """
+        path = exec_env_definition_file("{'version': 1, 'additional_build_steps': {'prepend': 'value1', 'append': 'value2'}}")
+        definition = UserDefinition(path)
+        definition.validate()
+        add_bld_steps = definition.raw['additional_build_steps']
+        assert 'prepend' in add_bld_steps
+        assert 'append' in add_bld_steps
+        assert add_bld_steps['prepend'] == 'value1'
+        assert add_bld_steps['append'] == 'value2'
+        assert 'prepend_final' in add_bld_steps
+        assert 'append_final' in add_bld_steps
+        assert add_bld_steps['prepend_final'] == add_bld_steps['prepend']
+        assert add_bld_steps['append_final'] == add_bld_steps['append']
+
 
 class TestImageDescription:
 

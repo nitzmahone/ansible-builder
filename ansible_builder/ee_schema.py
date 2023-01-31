@@ -200,3 +200,24 @@ def validate_schema(ee_def: dict):
             validate(instance=ee_def, schema=schema_v2)
     except (SchemaError, ValidationError) as e:
         raise DefinitionError(msg=e.message, path=e.absolute_schema_path)
+
+    _handle_aliasing(ee_def)
+
+
+def _handle_aliasing(ee_def: dict):
+    """
+    Upgrade EE keys into standard keys across schema versions.
+
+    Some EE keys are renamed across schema versions. So that we don't need to
+    check schema version, or do some other hackery, in the builder code when
+    accessing the values, just do the key name upgrades/aliasing here.
+    """
+
+    if 'additional_build_steps' in ee_def:
+        # V1 'prepend' == V2 'prepend_final'
+        if 'prepend' in ee_def['additional_build_steps']:
+            ee_def['additional_build_steps']['prepend_final'] = ee_def['additional_build_steps']['prepend']
+
+        # V1 'append' == V2 'append_final'
+        if 'append' in ee_def['additional_build_steps']:
+            ee_def['additional_build_steps']['append_final'] = ee_def['additional_build_steps']['append']

@@ -143,12 +143,10 @@ class Containerfile:
             "",
         ])
 
-        self._insert_custom_steps('prepend')  # EE v1
-        self._insert_custom_steps('prepend_final')  # EE v2
+        self._insert_custom_steps('prepend_final')
         self._prepare_galaxy_copy_steps()
         self._prepare_system_runtime_deps_steps()
-        self._insert_custom_steps('append')  # EE v1
-        self._insert_custom_steps('append_final')  # EE v2
+        self._insert_custom_steps('append_final')
         self._prepare_label_steps()
 
     def write(self):
