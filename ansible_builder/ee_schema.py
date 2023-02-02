@@ -46,6 +46,9 @@ schema_v1 = {
                 "ANSIBLE_GALAXY_CLI_COLLECTION_OPTS": {
                     "type": "string",
                 },
+                "ANSIBLE_GALAXY_CLI_ROLE_OPTS": {
+                    "type": "string",
+                },
             },
         },
 
@@ -105,6 +108,9 @@ schema_v2 = {
                 "ANSIBLE_GALAXY_CLI_COLLECTION_OPTS": {
                     "type": "string",
                 },
+                "ANSIBLE_GALAXY_CLI_ROLE_OPTS": {
+                    "type": "string",
+                },
             },
         },
 
@@ -123,6 +129,29 @@ schema_v2 = {
                 },
                 "system": {
                     "description": "The system dependency file",
+                    "type": "string",
+                },
+                "python_interpreter": {
+                    "description": "Python package name and path",
+                    "type": "object",
+                    "additionalProperties": False,
+                    "properties": {
+                        "package_name": {
+                            "description": "The python package to install",
+                            "type": "string",
+                        },
+                        "python_path": {
+                            "description": "Path to the python interpreter",
+                            "type": "string",
+                        },
+                    },
+                },
+                "ansible_core": {
+                    "description": "Ansible version for pip installation",
+                    "type": "string",
+                },
+                "ansible_runner": {
+                    "description": "Ansible Runner version for pip installation",
                     "type": "string",
                 },
             },

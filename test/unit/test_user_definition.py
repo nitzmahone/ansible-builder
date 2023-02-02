@@ -113,6 +113,32 @@ class TestUserDefinition:
         assert add_bld_steps['prepend_final'] == add_bld_steps['prepend']
         assert add_bld_steps['append_final'] == add_bld_steps['append']
 
+    def test_v2_images(self, exec_env_definition_file):
+        """
+        Verify that image definition contents are assigned correctly and copied
+        to the build_arg_defaults equivalents.
+        """
+        path = exec_env_definition_file(
+            "{'version': 2, 'images': { 'base_image': {'name': 'base_image:latest'}, 'builder_image': {'name': 'builder_image:latest'} }}"
+        )
+        definition = UserDefinition(path)
+        definition.validate()
+
+        assert definition.base_image.name == "base_image:latest"
+        assert definition.builder_image.name == "builder_image:latest"
+        assert definition.build_arg_defaults['EE_BASE_IMAGE'] == "base_image:latest"
+        assert definition.build_arg_defaults['EE_BUILDER_IMAGE'] == "builder_image:latest"
+
+    def test_v2_ansible_install_refs(self, exec_env_definition_file):
+        path = exec_env_definition_file(
+            "{'version': 2, 'dependencies': {'ansible_core': 'ansible-core==2.13', 'ansible_runner': 'ansible-runner==2.3.1'}}"
+        )
+        definition = UserDefinition(path)
+        definition.validate()
+        assert definition.ansible_core_ref == "ansible-core==2.13"
+        assert definition.ansible_runner_ref == "ansible-runner==2.3.1"
+        assert definition.ansible_ref_install_list == "ansible-core==2.13 ansible-runner==2.3.1"
+
 
 class TestImageDescription:
 
