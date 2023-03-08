@@ -131,7 +131,7 @@ class Containerfile:
         self.steps.extend([
             "",
             "# Final build stage",
-            "FROM base",
+            "FROM base as final",
         ])
 
         self._insert_global_args()
