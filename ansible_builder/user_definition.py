@@ -11,19 +11,6 @@ from .exceptions import DefinitionError
 from .ee_schema import validate_schema
 
 
-ALLOWED_KEYS_V1 = [
-    'version',
-    'build_arg_defaults',
-    'dependencies',
-    'ansible_config',
-    'additional_build_steps',
-]
-
-ALLOWED_KEYS_V2 = [
-    'images',
-]
-
-
 # HACK: manage lifetimes more carefully
 _tempfiles: list[Callable] = []
 
@@ -225,7 +212,7 @@ class UserDefinition:
             for key, user_value in build_arg_defaults.items():
                 self.build_arg_defaults[key] = user_value
 
-        if self.version == 2:
+        if self.version > 1:
             images = self.raw.get('images', {})
             if images:
                 self.base_image = ImageDescription(images, 'base_image')

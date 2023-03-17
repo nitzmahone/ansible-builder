@@ -111,6 +111,7 @@ class Containerfile:
         ######################################################################
 
         if self.definition.builder_image:
+            # Note: A builder image can be specified only in V1 or V2 schema.
             image = "$EE_BUILDER_IMAGE"
         else:
             # dynamic builder, create from customized base
