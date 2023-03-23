@@ -93,6 +93,10 @@ class UserDefinition:
         # Set default values for the build arguments. User supplied values
         # are set later during validation.
         self.build_arg_defaults = constants.build_arg_defaults.copy()
+        if self.version > 2:
+            # v3 and higher no longer supports a builder image so make
+            # sure this value is cleared of the default value.
+            self.build_arg_defaults['EE_BUILDER_IMAGE'] = None
 
         # Attributes used for creating podman container policies. These will be None
         # if no 'images' section is present in the EE, or an ImageDescription object otherwise.
