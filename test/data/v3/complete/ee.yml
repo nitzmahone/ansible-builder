@@ -18,6 +18,12 @@ dependencies:
   galaxy: |
     collections:
       - ansible.utils
+  python:
+    - six
+    - PyYaml==6.0
+  system:
+    - python311
+    - mysql
 
 additional_build_files:
   - src: files/random.cfg

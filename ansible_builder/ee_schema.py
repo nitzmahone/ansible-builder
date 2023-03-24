@@ -206,18 +206,12 @@ schema_v3 = {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "python": {
-                    "description": "The python dependency file",
-                    "type": "string",
-                },
+                "python": TYPE_StringOrListOfStrings,
                 "galaxy": {
                     "description": "The Galaxy dependency file",
                     "type": "string",
                 },
-                "system": {
-                    "description": "The system dependency file",
-                    "type": "string",
-                },
+                "system": TYPE_StringOrListOfStrings,
                 "python_interpreter": {
                     "description": "Python package name and path",
                     "type": "object",

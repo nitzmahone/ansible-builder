@@ -220,12 +220,12 @@ class UserDefinition:
             images = self.raw.get('images', {})
             if images:
                 self.base_image = ImageDescription(images, 'base_image')
-                self.builder_image = ImageDescription(images, 'builder_image')
 
                 # Must set these values so that Containerfile uses the proper images
                 if self.base_image.name:
                     self.build_arg_defaults['EE_BASE_IMAGE'] = self.base_image.name
-                if self.builder_image.name:
+                if 'builder_image' in images:
+                    self.builder_image = ImageDescription(images, 'builder_image')
                     self.build_arg_defaults['EE_BUILDER_IMAGE'] = self.builder_image.name
 
             self._validate_additional_build_files()

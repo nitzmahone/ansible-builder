@@ -75,8 +75,11 @@ class Containerfile:
                 # FIXME: better dnf cleanup needed?
                 self.steps.append('RUN dnf install $PYPKG -y && dnf clean all')
 
+            # We should always make sure pip is available for later stages.
+            self.steps.append('RUN $PYCMD -m ensurepip')
+
             if self.definition.ansible_ref_install_list:
-                self.steps.append('RUN $PYCMD -m ensurepip && $PYCMD -m pip install --no-cache-dir $ANSIBLE_INSTALL_REFS')
+                self.steps.append('RUN $PYCMD -m pip install --no-cache-dir $ANSIBLE_INSTALL_REFS')
 
         self._create_folder_copy_files()
         self._insert_custom_steps('append_base')

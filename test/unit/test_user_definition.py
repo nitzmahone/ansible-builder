@@ -165,6 +165,32 @@ class TestUserDefinition:
         assert definition.ansible_runner_ref == "ansible-runner==2.3.1"
         assert definition.ansible_ref_install_list == "ansible-core==2.13 ansible-runner==2.3.1"
 
+    def test_v3_inline_python(self, exec_env_definition_file):
+        """
+        Test that inline values for dependencies.python work.
+        """
+        path = exec_env_definition_file(
+            "{'version': 3, 'dependencies': {'python': ['req1', 'req2']}}"
+        )
+        definition = UserDefinition(path)
+        definition.validate()
+
+        python_req = definition.raw.get('dependencies', {}).get('python')
+        assert python_req == ['req1', 'req2']
+
+    def test_v3_inline_system(self, exec_env_definition_file):
+        """
+        Test that inline values for dependencies.system work.
+        """
+        path = exec_env_definition_file(
+            "{'version': 3, 'dependencies': {'system': ['req1', 'req2']}}"
+        )
+        definition = UserDefinition(path)
+        definition.validate()
+
+        system_req = definition.raw.get('dependencies', {}).get('system')
+        assert system_req == ['req1', 'req2']
+
 
 class TestImageDescription:
 
