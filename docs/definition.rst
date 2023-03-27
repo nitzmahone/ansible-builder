@@ -67,8 +67,8 @@ additional_build_files
 **********************
 
 This section allows you to add any file to the build context directory. These can
-then be referenced at any of image build stages. The format is a list of dictionary
-values, each with a ``src`` and ``dest`` key and value.
+then be referenced or copied by `additional_build_steps` during any build stage.
+The format is a list of dictionary values, each with a ``src`` and ``dest`` key and value.
 
 Each list item must be a dictionary containing the following (non-optional) keys:
 
@@ -76,8 +76,8 @@ Each list item must be a dictionary containing the following (non-optional) keys
       Specifies the source file(s) to copy into the build context directory. This
       may either be an absolute path (e.g., ``/home/user/.ansible.cfg``),
       or a path that is relative to the execution environment file. Relative paths may be
-      a regular expression matching one or more files (e.g. ``files/*.cfg``). Note
-      that the absolute path may *not* include a regular expression. If ``src`` is
+      a glob expression matching one or more files (e.g. ``files/*.cfg``). Note
+      that an absolute path may *not* include a regular expression. If ``src`` is
       a directory, the entire contents of that directory are copied to ``dest``.
 
     ``dest``
@@ -89,7 +89,11 @@ Each list item must be a dictionary containing the following (non-optional) keys
 additional_build_steps
 **********************
 
-This section enables you to specify custom build commands in for any build phase.
+This section enables you to specify custom build commands for any build phase.
+These commands will be inserted directly into the instruction file for the
+container runtime (e.g., `Containerfile` or `Dockerfile`). They will need to
+conform to any rules required for the runtime system.
+
 Below are the valid keys for this section. Each supports either a multi-line
 string, or a list of strings.
 
@@ -127,10 +131,10 @@ to using the :ref:`build-arg` CLI flag.
 Build args used by ``ansible-builder`` are the following:
 
     ``ANSIBLE_GALAXY_CLI_COLLECTION_OPTS``
-      This allows the user to pass the '--pre' flag (or others) to enable the installation of pre-releases collections.
+      This allows the user to pass the `--pre` flag (or others) to enable the installation of pre-release collections.
 
     ``ANSIBLE_GALAXY_CLI_ROLE_OPTS``
-      This allows the user to pass any flags to the role installation.
+      This allows the user to pass any flags, such as `--no-deps`, to the role installation.
 
 Values given inside of ``build_arg_defaults`` will be hard-coded into the
 Containerfile, so they will persist if ``podman build`` is called manually.
@@ -147,10 +151,26 @@ installed into the final image.
 The following keys are valid for this section:
 
     ``ansible_core``
-      The version of the Ansible python package to be installed by pip.
+      The version of the Ansible python package to be installed. This value is
+      passed directly to `pip` for installation and can be in any format that
+      pip supports. Below are some example values:
+
+      .. code:: yaml
+
+        ansible_core: ansible-core
+        ansible_core: ansible-core==2.14.3
+        ansible_core: https://github.com/example_user/ansible/archive/refs/heads/ansible.tar.gz
 
     ``ansible_runner``
-      The version of the Ansible Runner python package to be installed by pip.
+      The version of the Ansible Runner python package to be installed. This value is
+      passed directly to `pip` for installation and can be in any format that
+      pip supports. Below are some example values:
+
+      .. code:: yaml
+
+        ansible_runner: ansible-runner
+        ansible_runner: ansible-runner==2.3.2
+        ansible_runner: https://github.com/example_user/ansible-runner/archive/refs/heads/ansible-runner.tar.gz
 
     ``galaxy``
       Galaxy installation requirements. This may either be a filename, or a string
