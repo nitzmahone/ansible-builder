@@ -364,8 +364,6 @@ class Containerfile:
             introspect_cmd += " --write-bindep=/tmp/src/bindep.txt --write-pip=/tmp/src/requirements.txt"
 
             self.steps.append(introspect_cmd)
-            if self.definition.version >= 3:
-                self.steps.append("ENV PKGMGR=$PKGMGR")
             self.steps.append("RUN /output/scripts/assemble")
 
     def _prepare_system_runtime_deps_steps(self):
