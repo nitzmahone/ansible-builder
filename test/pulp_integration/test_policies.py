@@ -57,8 +57,8 @@ class TestPolicies:
         conf.write_text(data)
 
         try:
-            cmd = 'podman image prune --force'
-            subprocess.run(cmd.split())
+            # cmd = 'podman image prune --force'
+            # subprocess.run(cmd.split())
             cmd = 'podman rmi localhost:8080/testrepo/ansible-builder-rhel8:latest'
             subprocess.run(cmd.split())
         except Exception:

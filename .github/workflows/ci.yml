@@ -146,7 +146,7 @@ jobs:
 
       - name: Run integration tests (including destructive)
         run: |
-          tox -- --run-destructive
+          tox -- --run-destructive -vv
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
