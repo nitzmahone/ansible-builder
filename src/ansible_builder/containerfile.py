@@ -72,7 +72,8 @@ class Containerfile:
 
         if not self.definition.builder_image:
             if self.definition.python_package_system:
-                self.steps.append('RUN $PKGMGR install $PYPKG -y && $PKGMGR clean all')
+                # FIXME: support PKGMGR_PRESERVE_CACHE=1
+                self.steps.append('RUN $PKGMGR install $PYPKG -y')  # && $PKGMGR clean all')
 
             # We should always make sure pip is available for later stages.
             self.steps.append('RUN $PYCMD -m ensurepip')
@@ -195,6 +196,7 @@ class Containerfile:
             'EE_BUILDER_IMAGE': self.definition.build_arg_defaults['EE_BUILDER_IMAGE'],
             'PYCMD': self.definition.python_path or '/usr/bin/python3',
             'PYPKG': self.definition.python_package_system,
+            'PKGMGR_PRESERVE_CACHE': '1',  # FIXME: configurable
             'ANSIBLE_GALAXY_CLI_COLLECTION_OPTS': self.definition.build_arg_defaults['ANSIBLE_GALAXY_CLI_COLLECTION_OPTS'],
             'ANSIBLE_GALAXY_CLI_ROLE_OPTS': self.definition.build_arg_defaults['ANSIBLE_GALAXY_CLI_ROLE_OPTS'],
             'ANSIBLE_INSTALL_REFS': self.definition.ansible_ref_install_list,
