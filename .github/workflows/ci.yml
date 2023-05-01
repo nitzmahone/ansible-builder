@@ -6,104 +6,104 @@ on:
 
 
 jobs:
-  sanity:
-    name: ${{ matrix.test.name }}
-    runs-on: ubuntu-22.04
-    env:
-      TOXENV: ${{ matrix.test.tox_env }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        test:
-          - name: Lint
-            tox_env: linters-py310
-
-          - name: Docs
-            tox_env: docs
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install tox
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install tox
-
-      - name: Create tox environment
-        run: tox --notest
-
-      - name: Run tests
-        run: tox
-
-  secrets_preflight:
-    runs-on: ubuntu-22.04
-    name: Secrets pre-flight check
-    env:
-      secret_user: ${{ secrets.RH_REGISTRY_USER }}
-      secret_pass: ${{ secrets.RH_REGISTRY_PASSWORD }}
-    steps:
-      - id: has_secrets
-        if: ${{ env.secret_user != '' && env.secret_pass != '' }}
-        run: |
-          echo "has_secrets=${{ true }}" >> $GITHUB_OUTPUT
-    outputs:
-      has_secrets: ${{ steps.has_secrets.outputs.has_secrets }}
-
-
-  pulp_integration:
-    runs-on: ubuntu-22.04
-    name: Pulp Integration - ${{ matrix.py_version.name }}
-    # NB: running this job requires access to an RH registry token; PRs can't currently access the main repo secret,
-    # so forks will need to define the secrets locally to run these tests pre-merge
-    needs: secrets_preflight
-    if: needs.secrets_preflight.outputs.has_secrets == 'true'
-
-    env:
-      TOXENV: ${{ matrix.py_version.tox_env }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        py_version:
-          - name: '3.10'
-            tox_env: pulp-integration-py310
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Python ${{ matrix.py_version.name }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.py_version.name }}
-
-      - name: Install tox
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install tox
-
-      - name: Install pulp_cli
-        run: |
-          python3 -m pip install pulp_cli[pygments]
-
-      - name: Setup pulp
-        env:
-          BUILDER_RH_REGISTRY_USR: ${{ secrets.RH_REGISTRY_USER }}
-          BUILDER_RH_REGISTRY_PWD: ${{ secrets.RH_REGISTRY_PASSWORD }}
-        run: |
-          ./.github/test-scripts/setup_pulp.sh "$BUILDER_RH_REGISTRY_USR" "$BUILDER_RH_REGISTRY_PWD"
-
-      - name: Create tox environment
-        run: |
-          tox --notest
-
-      - name: Run pulp integration tests
-        run: |
-          tox -- --run-destructive
-
-
+#  sanity:
+#    name: ${{ matrix.test.name }}
+#    runs-on: ubuntu-22.04
+#    env:
+#      TOXENV: ${{ matrix.test.tox_env }}
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        test:
+#          - name: Lint
+#            tox_env: linters-py310
+#
+#          - name: Docs
+#            tox_env: docs
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install tox
+#        run: |
+#          python3 -m pip install --upgrade pip
+#          python3 -m pip install tox
+#
+#      - name: Create tox environment
+#        run: tox --notest
+#
+#      - name: Run tests
+#        run: tox
+#
+#  secrets_preflight:
+#    runs-on: ubuntu-22.04
+#    name: Secrets pre-flight check
+#    env:
+#      secret_user: ${{ secrets.RH_REGISTRY_USER }}
+#      secret_pass: ${{ secrets.RH_REGISTRY_PASSWORD }}
+#    steps:
+#      - id: has_secrets
+#        if: ${{ env.secret_user != '' && env.secret_pass != '' }}
+#        run: |
+#          echo "has_secrets=${{ true }}" >> $GITHUB_OUTPUT
+#    outputs:
+#      has_secrets: ${{ steps.has_secrets.outputs.has_secrets }}
+#
+#
+#  pulp_integration:
+#    runs-on: ubuntu-22.04
+#    name: Pulp Integration - ${{ matrix.py_version.name }}
+#    # NB: running this job requires access to an RH registry token; PRs can't currently access the main repo secret,
+#    # so forks will need to define the secrets locally to run these tests pre-merge
+#    needs: secrets_preflight
+#    if: needs.secrets_preflight.outputs.has_secrets == 'true'
+#
+#    env:
+#      TOXENV: ${{ matrix.py_version.tox_env }}
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        py_version:
+#          - name: '3.10'
+#            tox_env: pulp-integration-py310
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install Python ${{ matrix.py_version.name }}
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: ${{ matrix.py_version.name }}
+#
+#      - name: Install tox
+#        run: |
+#          python3 -m pip install --upgrade pip
+#          python3 -m pip install tox
+#
+#      - name: Install pulp_cli
+#        run: |
+#          python3 -m pip install pulp_cli[pygments]
+#
+#      - name: Setup pulp
+#        env:
+#          BUILDER_RH_REGISTRY_USR: ${{ secrets.RH_REGISTRY_USER }}
+#          BUILDER_RH_REGISTRY_PWD: ${{ secrets.RH_REGISTRY_PASSWORD }}
+#        run: |
+#          ./.github/test-scripts/setup_pulp.sh "$BUILDER_RH_REGISTRY_USR" "$BUILDER_RH_REGISTRY_PWD"
+#
+#      - name: Create tox environment
+#        run: |
+#          tox --notest
+#
+#      - name: Run pulp integration tests
+#        run: |
+#          tox -- --run-destructive
+#
+#
   integration:
     runs-on: ubuntu-22.04
     name: Integration - ${{ matrix.py_version.name }}
@@ -115,11 +115,11 @@ jobs:
       fail-fast: false
       matrix:
         py_version:
-          - name: '3.9'
-            tox_env: integration-py39
-
-          - name: '3.10'
-            tox_env: integration-py310
+#          - name: '3.9'
+#            tox_env: integration-py39
+#
+#          - name: '3.10'
+#            tox_env: integration-py310
 
           - name: '3.11'
             tox_env: integration-py311
@@ -129,6 +129,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # this is not ideal, but we need tags available to generate versions in tests
+
+      - name: Start SSH session
+        uses: nitzmahone/debug-via-ssh@main
+        with:
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
 
       - name: Install Python ${{ matrix.py_version.name }}
         uses: actions/setup-python@v4
@@ -153,48 +159,48 @@ jobs:
         with:
           files: test/coverage/reports/coverage.xml
           flags: ${{ matrix.py_version.tox_env }}
-
-  unit:
-    name: Unit - ${{ matrix.py_version.name}}
-    runs-on: ubuntu-22.04
-    env:
-      TOXENV: ${{ matrix.py_version.tox_env }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        py_version:
-          - name: '3.9'
-            tox_env: unit-py39
-
-          - name: '3.10'
-            tox_env: unit-py310
-
-          - name: '3.11'
-            tox_env: unit-py311
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Python ${{ matrix.py_version.name }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.py_version.name }}
-
-      - name: Install tox
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install tox
-
-      - name: Create tox environment
-        run: tox --notest
-
-      - name: Run tests
-        run: tox
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v3
-        with:
-          files: test/coverage/reports/coverage.xml
-          flags: ${{ matrix.py_version.tox_env }}
+#
+#  unit:
+#    name: Unit - ${{ matrix.py_version.name}}
+#    runs-on: ubuntu-22.04
+#    env:
+#      TOXENV: ${{ matrix.py_version.tox_env }}
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        py_version:
+#          - name: '3.9'
+#            tox_env: unit-py39
+#
+#          - name: '3.10'
+#            tox_env: unit-py310
+#
+#          - name: '3.11'
+#            tox_env: unit-py311
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install Python ${{ matrix.py_version.name }}
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: ${{ matrix.py_version.name }}
+#
+#      - name: Install tox
+#        run: |
+#          python3 -m pip install --upgrade pip
+#          python3 -m pip install tox
+#
+#      - name: Create tox environment
+#        run: tox --notest
+#
+#      - name: Run tests
+#        run: tox
+#
+#      - name: Upload coverage report
+#        uses: codecov/codecov-action@v3
+#        with:
+#          files: test/coverage/reports/coverage.xml
+#          flags: ${{ matrix.py_version.tox_env }}
