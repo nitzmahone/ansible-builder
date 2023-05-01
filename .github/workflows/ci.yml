@@ -130,12 +130,6 @@ jobs:
         with:
           fetch-depth: 0  # this is not ideal, but we need tags available to generate versions in tests
 
-      - name: Start SSH session
-        uses: nitzmahone/debug-via-ssh@main
-        with:
-          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-
       - name: Install Python ${{ matrix.py_version.name }}
         uses: actions/setup-python@v4
         with:
@@ -149,6 +143,12 @@ jobs:
       - name: Create tox environment
         run: |
           tox --notest
+
+      - name: Start SSH session
+        uses: nitzmahone/debug-via-ssh@main
+        with:
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
 
       - name: Run integration tests (including destructive)
         run: |
