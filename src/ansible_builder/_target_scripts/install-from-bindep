@@ -19,6 +19,7 @@ set -ex
 # manager.
 PKGMGR="${PKGMGR:-}"
 PKGMGR_OPTS="${PKGMGR_OPTS:-}"
+PKGMGR_PRESERVE_CACHE="${PKGMGR_PRESERVE_CACHE:-}"
 
 PYCMD="${PYCMD:=/usr/bin/python3}"
 PIPCMD="${PIPCMD:=$PYCMD -m pip}"
@@ -44,7 +45,7 @@ then
     fi
 fi
 
-$PKGMGR upgrade -y $PKGMGR_OPTS
+# $PKGMGR upgrade -y $PKGMGR_OPTS
 
 if [ -f /output/bindep/run.txt ] ; then
     PACKAGES=$(cat /output/bindep/run.txt)
@@ -99,7 +100,10 @@ else
 fi
 
 # clean up after ourselves
-$PKGMGR clean all
-rm -rf /var/cache/{dnf,yum}
+if [ -z $PKGMGR_PRESERVE_CACHE ]; then
+  $PKGMGR clean all
+  rm -rf /var/cache/{dnf,yum}
+fi
+
 rm -rf /var/lib/dnf/history.*
 rm -rf /var/log/{dnf.*,hawkey.log}
