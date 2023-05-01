@@ -180,19 +180,38 @@ def test_has_pytz(cli, runtime, data_dir, ee_tag, tmp_path):
 def test_build_layer_reuse(cli, runtime, data_dir, ee_tag, tmp_path):
     ee_def = data_dir / 'minimal_fast' / 'execution-environment.yml'
 
+    containerfile_name = 'Containerfile'
+
     if runtime == 'docker':
+        containerfile_name = 'Dockerfile'
         # Prune the build cache. This command does not exist for podman.
         cli(f'{runtime} builder prune --force')
 
     build_cmd = f'ansible-builder build -c {tmp_path} -f {ee_def} -t {ee_tag} --container-runtime {runtime} -v 3 --squash off'
-    cli(build_cmd + ' --no-cache')
-    result = cli(build_cmd)
+
+    print(f"tempdir {tmp_path}")
+    no_cache_result = cli(build_cmd + ' --no-cache')
+
+    pass1_containerfile = (tmp_path / containerfile_name).read_text()
+
+    print(f"no_cache_result: {no_cache_result}")
+    print(f"containerfile contents for no-cache: {pass1_containerfile}")
+
+    assert 'hi mom' in no_cache_result.stdout, no_cache_result.stdout
+
+    cache_result = cli(build_cmd)
+    pass2_containerfile = (tmp_path / containerfile_name).read_text()
+
+    print(f"containerfile contents after cached run: {pass2_containerfile}")
+    print(f"cache_result: {cache_result}")
 
     # Get the range of lines that contain the step we want to ensure used the cached layer
-    out_lines = result.stdout.splitlines()
+    out_lines = cache_result.stdout.splitlines()
     test_index = [idx for idx, value in enumerate(out_lines) if 'RUN echo "$(echo hi) $(echo mom)"' in value][0]
 
-    assert 'hi mom' not in result.stdout, result.stdout
+    assert pass1_containerfile == pass2_containerfile
+
+    assert 'hi mom' not in cache_result.stdout, cache_result.stdout
     assert any('cache' in line.lower() for line in out_lines[test_index:])
 
 
