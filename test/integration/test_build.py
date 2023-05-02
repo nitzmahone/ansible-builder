@@ -260,3 +260,9 @@ def test_galaxy_signing_extra_args(cli, runtime, data_dir, ee_tag, tmp_path):
 
     assert "--ignore-signature-status-code NODATA" in result.stdout
     assert "--required-valid-signature-count 3" in result.stdout
+
+
+@pytest.mark.serial
+def test_placeholder_serial():
+    # easiest way to prevent failures when there are no serial tests
+    pass
