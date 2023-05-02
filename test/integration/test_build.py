@@ -172,8 +172,6 @@ def test_has_pytz(cli, runtime, data_dir, ee_tag, tmp_path):
     assert 'World timezone definitions, modern and historical' in result.stdout
 
 
-# can trash the build cache, must be run independently and with the user's explicit consent
-@pytest.mark.serial
 @pytest.mark.destructive
 @pytest.mark.test_all_runtimes
 def test_build_layer_reuse(cli, runtime, data_dir, ee_tag, tmp_path):
